@@ -1,6 +1,10 @@
 package entites;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import services.OperacaoBancaria;
 
 public class  ContaBancaria{
 	
@@ -8,8 +12,14 @@ public class  ContaBancaria{
 	private String password;
 	private Double amount;
 	private LocalDate openDate;
+	private List<OperacaoBancaria> operationList;
 	
+	public ContaBancaria() {
+		this.operationList = new ArrayList<OperacaoBancaria>();
+	}
+
 	public ContaBancaria(int agency, int accountNumber, String password) {
+		this();
 		this.agency = agency;
 		this.accountNumber = accountNumber;
 		this.password = password;
@@ -27,6 +37,10 @@ public class  ContaBancaria{
 	public final int getAgency() {
 		return agency;
 	}
+	
+	public final String getPassword() {
+		return password;
+	}
 
 	public final int getAccountNumber() {
 		return accountNumber;
@@ -35,6 +49,11 @@ public class  ContaBancaria{
 	public final Double getAmount() {
 		return amount;
 	}
+
+	public final List<OperacaoBancaria> getOperationList() {
+		return operationList;
+	}
+	
 	
 	
 	
