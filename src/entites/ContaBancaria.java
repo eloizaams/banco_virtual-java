@@ -12,13 +12,14 @@ public class  ContaBancaria{
 	private String password;
 	private Double amount;
 	private LocalDate openDate;
+	private Cliente cliente;
 	private List<OperacaoBancaria> operationList;
 	
 	public ContaBancaria() {
 		this.operationList = new ArrayList<OperacaoBancaria>();
 	}
 
-	public ContaBancaria(int agency, int accountNumber, String password) {
+	public ContaBancaria(Cliente cliente, int agency, int accountNumber, String password) {
 		this();
 		this.agency = agency;
 		this.accountNumber = accountNumber;
@@ -48,6 +49,10 @@ public class  ContaBancaria{
 
 	public final Double getAmount() {
 		return amount;
+	}
+
+	public final Cliente getCliente() {
+		return cliente;
 	}
 
 	public final List<OperacaoBancaria> getOperationList() {

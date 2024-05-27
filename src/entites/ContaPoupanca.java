@@ -4,12 +4,12 @@ public final class ContaPoupanca extends ContaBancaria {
 	
 	private double monthlyInterestRate;
 
-	public ContaPoupanca(int agency, int accountNumber, String password) {
-		super(agency, accountNumber, password);
+	public ContaPoupanca(Cliente cliente, int agency, int accountNumber, String password) {
+		super(cliente, agency, accountNumber, password);
 	}
 
-	public ContaPoupanca(int agency, int accountNumber, String password, double monthlyInterestRate) {
-		super(agency, accountNumber, password);
+	public ContaPoupanca(Cliente cliente, int agency, int accountNumber, String password, double monthlyInterestRate) {
+		super(cliente, agency, accountNumber, password);
 		this.monthlyInterestRate = monthlyInterestRate;
 	}
 

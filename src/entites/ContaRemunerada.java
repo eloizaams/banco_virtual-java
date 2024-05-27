@@ -4,13 +4,13 @@ public final class ContaRemunerada extends ContaBancaria {
 	
 	private double dailyIterestRate;
 
-	public ContaRemunerada(int agency, int accountNumber, String password) {
-		super(agency, accountNumber, password);
+	public ContaRemunerada(Cliente cliente, int agency, int accountNumber, String password) {
+		super(cliente, agency, accountNumber, password);
 		
 	}
 
-	public ContaRemunerada(int agency, int accountNumber, String password, double dailyIterestRate) {
-		super(agency, accountNumber, password);
+	public ContaRemunerada(Cliente cliente, int agency, int accountNumber, String password, double dailyIterestRate) {
+		super(cliente, agency, accountNumber, password);
 		this.dailyIterestRate = dailyIterestRate;
 	}
 
