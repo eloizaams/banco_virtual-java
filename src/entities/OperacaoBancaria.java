@@ -1,6 +1,7 @@
-package services;
+package entities;
 
 import java.time.LocalDate;
+import services.TipoOperacao;
 import java.time.LocalTime;
 
 public class OperacaoBancaria {

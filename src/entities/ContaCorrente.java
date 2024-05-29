@@ -1,11 +1,11 @@
-package entites;
+package entities;
 
 public final class ContaCorrente extends ContaBancaria {
 	
 	private static int createdAccounts;
 
-	public ContaCorrente(Cliente cliente, int agency, int accountNumber, String password) {
-		super(cliente, agency, accountNumber, password);
+	public ContaCorrente(Cliente cliente, int agency, String password) {
+		super(cliente, agency, password);
 		createdAccounts ++;
 	}
 

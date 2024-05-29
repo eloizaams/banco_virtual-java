@@ -1,15 +1,20 @@
-package entites;
+package entities;
 
 public final class ContaPoupanca extends ContaBancaria {
 	
 	private double monthlyInterestRate;
 
-	public ContaPoupanca(Cliente cliente, int agency, int accountNumber, String password) {
-		super(cliente, agency, accountNumber, password);
+	public ContaPoupanca(Cliente cliente, int agency,  String password) {
+		super(cliente, agency,  password);
 	}
 
-	public ContaPoupanca(Cliente cliente, int agency, int accountNumber, String password, double monthlyInterestRate) {
-		super(cliente, agency, accountNumber, password);
+	public ContaPoupanca(Cliente cliente, int agency, String password, double amount, double monthlyInterestRate) {
+		super(cliente, agency, password, amount);
+		this.monthlyInterestRate = monthlyInterestRate;
+	}
+
+	public ContaPoupanca(Cliente cliente, int agency, String password, double monthlyInterestRate) {
+		this(cliente, agency, password);
 		this.monthlyInterestRate = monthlyInterestRate;
 	}
 
@@ -21,6 +26,6 @@ public final class ContaPoupanca extends ContaBancaria {
 		this.monthlyInterestRate = monthlyInterestRate;
 	}
 	
-	
+
 
 }

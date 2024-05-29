@@ -1,25 +1,31 @@
-package entites;
+package entities;
 
 public final class ContaRemunerada extends ContaBancaria {
 	
-	private double dailyIterestRate;
+	private double dailyInterestRate;
 
-	public ContaRemunerada(Cliente cliente, int agency, int accountNumber, String password) {
-		super(cliente, agency, accountNumber, password);
-		
+	public ContaRemunerada(Cliente cliente, int agency,  String password) {
+		super(cliente, agency,  password);
 	}
 
-	public ContaRemunerada(Cliente cliente, int agency, int accountNumber, String password, double dailyIterestRate) {
-		super(cliente, agency, accountNumber, password);
-		this.dailyIterestRate = dailyIterestRate;
+	public ContaRemunerada(Cliente cliente, int agency, String password, double dailyInterestRate) {
+		this(cliente, agency,  password);
+		this.dailyInterestRate = dailyInterestRate;
+	}
+	
+	public ContaRemunerada(Cliente cliente, int agency, String password, double amount, double dailyInterestRate) {
+		super(cliente, agency, password, amount);
+		this.dailyInterestRate = dailyInterestRate;
+	}
+	
+	public final double getDailyInterestRate() {
+		return dailyInterestRate;
 	}
 
-	public final double getDailyIterestRate() {
-		return dailyIterestRate;
+	public final void setDailyInterestRate(double dailyIterestRate) {
+		this.dailyInterestRate = dailyIterestRate;
 	}
 
-	public final void setDailyIterestRate(double dailyIterestRate) {
-		this.dailyIterestRate = dailyIterestRate;
-	}
+	
 	
 }//class ContaRemunerada
