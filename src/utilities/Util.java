@@ -1,6 +1,6 @@
 package utilities;
 
-import static mos.io.InputOutput.readString;
+import static mos.io.InputOutput.*;
 
 
 public abstract class Util {
@@ -35,6 +35,16 @@ public abstract class Util {
 	}
 	
 	/**
+	 * Formata um nome para ficar com as iniciais maiúsculas e o restante minúsculo
+	 * @param nome
+	 * @return String com o nome formatado
+	 */
+	public static String formatarReais(Double valor) {
+       
+        return String.format("R$ %.2f", valor);
+	}
+	
+	/**
 	 * Lê um valor double a partir de uma mensagem exibida ao usuário.
 	 * Caso o separador decimal digitao seja vírgula, ele substitui por ponto. 
 	 * 
@@ -42,13 +52,44 @@ public abstract class Util {
 	 * @param titulo O título da janela de entrada.
 	 * @return O valor double lido ou 0.0 se a entrada for inválida.
 	 */
-	public static Double leDouble (String mensagem, String titulo) {
-		String numero = readString(mensagem,titulo);
-		Double valor = 0.0;
-		 if (numero != null) {
-	            numero = numero.replaceAll(",", ".");
-	            valor = Double.parseDouble(numero);
-		 }
-		return (valor==null)?0:valor; 
+	public static Double leDouble(String mensagem, String titulo) {
+	    Double valor = null;
+	    do {
+	        try {
+	            String input = readString(mensagem, titulo);
+	            if (input == null) {
+	                return null;  // Retorna null se a caixa de diálogo for fechada ou cancelada
+	            }
+	            valor = Double.parseDouble(input.replaceAll(",", "."));
+	        } catch (NumberFormatException e) {
+	            valor = null;  // Define valor como null se a entrada não for um número válido
+	        }
+	    } while (valor == null);
+
+	    return valor;
 	}
+	
+	/**
+	 * Lê um valor inte a partir de uma mensagem exibida ao usuário.
+	 * 
+	 * @param mensagem A mensagem a ser exibida para solicitar o valor.
+	 * @param titulo O título da janela de entrada.
+	 * @return O valor double lido ou 0.0 se a entrada for inválida.
+	 */
+	public static Integer leInt(String mensagem, String titulo) {
+	    Integer valor = null;
+	    do {
+	        try {
+	            valor = readInt(mensagem, titulo);
+	            if (valor == null) {
+	                return null;  // Retorna null se a caixa de diálogo for fechada ou cancelada
+	            }
+	        } catch (NumberFormatException e) {
+	            valor = null;  // Define valor como -1 se a entrada não for um número válido
+	        }
+	    } while (valor == null);
+
+	    return valor;
+	}
+	
 }//class Util

@@ -1,8 +1,6 @@
 package utilities;
 
 import static mos.io.InputOutput.readString;
-import static utilities.Constantes.MSG_CPF;
-import static utilities.Constantes.TITULO_DADOS_CLIENTE;
 
 public abstract class CPF {
 		
@@ -74,7 +72,6 @@ public abstract class CPF {
 			if (cpf.charAt(i) != primeiroDigito) {
 				todosNumerosIguais = false;
 				break;
-
 			}
 		}
 		return todosNumerosIguais;

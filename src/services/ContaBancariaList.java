@@ -1,5 +1,18 @@
 package services;
 
+import static mos.io.InputOutput.*;
+import static mos.io.InputOutput.readInt;
+import static services.TipoConta.CORRENTE;
+import static services.TipoConta.POUPANCA;
+import static services.TipoConta.REMUNERADA;
+import static services.TipoConta.criaVetorTipoConta;
+import static utilities.Constantes.*;
+
+import static utilities.DatesAndTimes.diasUteis;
+import static utilities.DatesAndTimes.mesesEntre;
+import static utilities.Util.*;
+import static utilities.CPF.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +26,6 @@ import entities.ContaRemunerada;
 import entities.OperacaoBancaria;
 import exception.BancoExceptions;
 
-import static mos.io.InputOutput.*;
-import static utilities.CPF.leCpf;
-import static utilities.Constantes.*;
-import static services.TipoConta.*;
-import static utilities.DatesAndTimes.*;
-import static utilities.Util.formatarNome;
-import static utilities.Util.leDouble;
-import static utilities.Util.leString;
-
 public class ContaBancariaList{
 	
 	private List<ContaBancaria> contaBancariaList;
@@ -31,13 +35,21 @@ public class ContaBancariaList{
 		this.contaBancariaList = new ArrayList<ContaBancaria>();
 		this.operacaoBancariaList = new ArrayList<Object[]>();
 	}
+	
+	public final List<ContaBancaria> getContaBancariaList() {
+		return contaBancariaList;
+	}
+
+	public final List<Object[]> getOperacaoBancariaList() {
+		return operacaoBancariaList;
+	}
 
 	public void abrirContaBancaria() {
 		Cliente cliente = criarCliente();
 		String senha = criarSenha();
 		int agencia = readInt(MSG_AGENCIA, TITULO_DADOS_CLIENTE);
 		ContaBancaria conta = null; 
-		TipoConta tipoConta = TipoConta.values()[menu(MSG_CONTA_DESTINO, TITULO_MOVIMENTACAO, criaVetorTipoConta(),CORRENTE.toString())];
+		TipoConta tipoConta = TipoConta.values()[menu(MSG_CONTA_TIPO, TITULO_ABERTURA_CONTA, criaVetorTipoConta(),CORRENTE.toString())];
 		
 		switch (tipoConta) {
 			case CORRENTE: 
@@ -125,22 +137,21 @@ public class ContaBancariaList{
         return true;
     }
     
-    
 	public void adicionaOperacaoBancaria(ContaBancaria conta, OperacaoBancaria ob) {
 		if (!contaBancariaList.contains(conta)) {
 			throw new BancoExceptions(ERRO_CONTA_INEXISTENTE);
 		}
-		if (executarOperacaoBancaria(conta, ob)) {
-			Object[] object = {conta, ob};
-			operacaoBancariaList.add(object);
-		}
+		Object[] object = {conta, ob};
+		operacaoBancariaList.add(object);
 	}
+	
 
 	public boolean executarOperacaoBancaria(ContaBancaria conta, OperacaoBancaria ob) {
 		double rendimento = calculaRendimento(conta);
 		if (rendimento > 0) {
 			OperacaoBancaria deposito = new OperacaoBancaria(TipoOperacao.DEPOSITO,rendimento);
 			executarOperacaoDeposito (conta, deposito);
+			adicionaOperacaoBancaria(conta,deposito);
 		}
 		switch(ob.getType()) {
 			case SALDO: {
@@ -164,6 +175,7 @@ public class ContaBancariaList{
 			}
 			default: return false;	
 		}
+		adicionaOperacaoBancaria(conta,ob);
 		return true;
 	}
 	
@@ -175,16 +187,15 @@ public class ContaBancariaList{
 	}
 
 	private void executarOperacaoTransferencia(ContaBancaria conta, OperacaoBancaria ob) {
-		
-		int opcao = menu(MSG_CONTA_DESTINO, TITULO_MOVIMENTACAO, new String[]{REMUNERADA.toString(),POUPANCA.toString()},REMUNERADA.toString());
+		int opcao = menu(MSG_CONTA_TIPO, TITULO_MOVIMENTACAO, new String[]{REMUNERADA.toString(),POUPANCA.toString()},REMUNERADA.toString());
 		ContaBancaria destino = null;
 		
 		for(ContaBancaria cb: contaBancariaList) {
-			if (opcao == 0 && cb instanceof ContaRemunerada && conta.getCliente() == cb.getCliente()) {
+			if (opcao == 0 && cb instanceof ContaRemunerada && conta.getCliente().getCpf().equals(cb.getCliente().getCpf())) {
 				destino = cb;
 				break;
 			}
-			if (opcao == 1 && cb instanceof ContaPoupanca && conta.getCliente() == cb.getCliente()) {
+			if (opcao == 1 && cb instanceof ContaPoupanca && conta.getCliente().getCpf().equals(cb.getCliente().getCpf())) {
 				destino = cb;
 				break;
 			}
@@ -195,7 +206,6 @@ public class ContaBancariaList{
 		}
 		
 		conta.transferencia(destino,ob.getAmount());
-		showInfo(MSG_TRANSFERENCIA_OK, TITULO_MOVIMENTACAO);
 	}
 
 	private void executarOperacaoDeposito(ContaBancaria conta, OperacaoBancaria ob) {
@@ -206,7 +216,7 @@ public class ContaBancariaList{
 		if (!contaBancariaList.contains(conta)) {
 			throw new BancoExceptions(ERRO_CONTA_INEXISTENTE);
 		}
-		
+				
 		return conta.getSaldo();
 	}
 
@@ -224,33 +234,34 @@ public class ContaBancariaList{
 		if (conta instanceof ContaCorrente) {
 			return ZERO;
 		}
-		
 		List<OperacaoBancaria> obList = obterOperacoesConta(conta);
 		LocalDate ultimaAtualizacao;
 		//Verifica se lista de operacões bancárias da conta está vazia
-		if (obList == null) {
+		if (obList.size() == ZERO_INT) {
 			ultimaAtualizacao = conta.getOpenDate();
 		}
 		else {
 			ultimaAtualizacao = obList.getLast().getDate();
 		}
-		
 		double valor = conta.getSaldo(); 
 		double rate = 0;
 		int periodo = 0;
+		
 		if (conta instanceof ContaPoupanca) {
 			rate = ((ContaPoupanca)conta).getMonthlyInterestRate();
-			periodo =  mesesEntre(LocalDate.now(), ultimaAtualizacao);
+			periodo =  mesesEntre(ultimaAtualizacao, LocalDate.now());
 		}
 		
 		if (conta instanceof ContaRemunerada) {
 			rate = ((ContaRemunerada)conta).getDailyInterestRate();
-			periodo =  mesesEntre(LocalDate.now(), ultimaAtualizacao);
+			periodo =  diasUteis(ultimaAtualizacao, LocalDate.now());
 		}
 		for (int i = 0; i < periodo; i++) { 
 			valor += valor*rate;
 		}
 		return valor - conta.getSaldo();
 	}
+	
+
 	
 }//class ContaBancariaList

@@ -11,6 +11,10 @@ public class OperacaoBancaria {
 	private TipoOperacao type;
 	private double amount;
 	
+	public OperacaoBancaria(TipoOperacao type) {
+		this(type, 0.0);
+	}
+	
 	public OperacaoBancaria(TipoOperacao type, double amount) {
 		this.type = type;
 		this.amount = amount;

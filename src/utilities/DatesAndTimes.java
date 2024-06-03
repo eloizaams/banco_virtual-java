@@ -1,7 +1,10 @@
 package utilities;
 
+import static utilities.Constantes.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class DatesAndTimes {
 
@@ -30,5 +33,21 @@ public class DatesAndTimes {
         }
         return diasUteis;
     }
+    
+    // Converte uma data no formato "dd/mm/aaaa" em um objeto LocalDate
+    public static LocalDate converteData(String data) {
+        if (data.length() == 10)
+            return LocalDate.parse(data, DateTimeFormatter.ofPattern(FORMATA_DATA));
+        return null;
+    }
 
+    // Converte um objeto LocalDate em uma String no formato "dd/mm/aaaa"
+    public static String toStringData(LocalDate data) {
+        return data.format(DateTimeFormatter.ofPattern(FORMATA_DATA));
+    }
+
+    // Converte um objeto LocalTime em uma String no formato "HH:MM:SS"
+    public static String toStringHora(LocalTime hora) {
+        return hora.format(DateTimeFormatter.ofPattern(FORMATA_HORA));
+    }
 }
